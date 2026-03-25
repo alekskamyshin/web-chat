@@ -5,7 +5,7 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface GoogleSignInDto {
-  idToken: string;
+export interface googlesignindto {
+  idtoken: string;
   nonce?: string;
 }
