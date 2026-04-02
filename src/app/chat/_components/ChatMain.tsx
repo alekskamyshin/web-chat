@@ -55,7 +55,7 @@ export default function ChatMain({ selectedChat }: ChatMainProps) {
       </div>
 
 			<Chat photoUrl={selectedChat.photoUrl} chatId={selectedChat.id} />
-			<Composer />
+			<Composer chatId={selectedChat.id} />
 
     </section>
   );

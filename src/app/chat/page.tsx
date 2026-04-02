@@ -12,6 +12,7 @@ import { useChatSocket } from '@/features/socket/hooks/useChatSocket';
 import { useChats } from '@/entities/chat/model/hooks/useChats';
 import ChatSidebar from '@/app/chat/_components/ChatSidebar';
 import ChatMain from '@/app/chat/_components/ChatMain';
+import NewChatWidget from '@/features/new-chat/ui/NewChatWidget';
 
 export default function ChatPage() {
   const router = useRouter();
@@ -20,6 +21,8 @@ export default function ChatPage() {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const { data: me, isLoading: isMeLoading, error: meError } = useMe();
   const { data: chatsData, isLoading: isChatsLoading } = useChats();
+	const [isCreateChatModalOpen, setIsCreateChatModalOpen ] = useState<boolean>(false)
+
   const chats = chatsData?.items ?? [];
 
   const selectedChat = useMemo(() => {
@@ -77,11 +80,12 @@ export default function ChatPage() {
   return (
     <main className="flex h-full flex-1 bg-[color:var(--background)]">
       <div className="flex h-full w-full flex-1 flex-col lg:flex-row">
+				<NewChatWidget isOpen={isCreateChatModalOpen} toggle={() => setIsCreateChatModalOpen( prev => !prev)} />
         <div className="w-full max-w-none lg:max-w-sm">
           <ChatSidebar
             chats={chats}
             onSelectChat={setSelectedChatId}
-            onCreateChat={() => console.log('create chat')}
+            onCreateChat={() => setIsCreateChatModalOpen(true)}
             onLogout={handleLogout}
             isLoggingOut={isLoggingOut}
             isLoading={isChatsLoading}

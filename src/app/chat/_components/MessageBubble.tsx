@@ -21,8 +21,8 @@ export default function MessageBubble({
 }: Props) {
 
 	const variants = {
-		[messageTypes.send]: "justify-start",
-		[messageTypes.receive]: "justify-end",
+		[messageTypes.send]: "justify-end",
+		[messageTypes.receive]: "justify-start",
 	}
 
 	const baseClasses =
@@ -35,7 +35,7 @@ export default function MessageBubble({
 			<div className="h-9 w-9 rounded-full overflow-hidden bg-[color:var(--elevated)]">
 				{ avatar && <img className="h-full w-full object-cover" src={avatar} /> }
 			</div>
-			<div className="rounded-2xl bg-[color:var(--elevated)] px-4 py-3 text-sm text-[color:var(--text-primary)]">
+			<div className="rounded-2xl bg-[color:var(--elevated)] px-4 py-3 text-sm text-[color:var(--text-primary)] whitespace-pre-wrap">
 				{ content }
 			</div>
 		</div>

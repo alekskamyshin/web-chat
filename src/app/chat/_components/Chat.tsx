@@ -36,14 +36,14 @@ export default function Chat({chatId, photoUrl}: ChatProps) {
 		)
 	}
 
-	const isSenderMessage = (id: string) => me.user.id === id
+	const isMyMessage = (id: string) => me.user.id === id
 
 	return (
       <div className="flex flex-1 flex-col w-full py-6 px-6 overflow-auto">
         <div className="flex flex-col gap-4">
 				{ messageData.map( msg => {
 					return (
-						<MessageBubble key={msg.id} avatar={isSenderMessage(msg.senderId) ? photoUrl : undefined} variant={isSenderMessage(msg.senderId) ? 'send' : 'receive'} content={msg.content}/>
+						<MessageBubble key={msg.id} avatar={isMyMessage(msg.senderId) ?  me?.user.photoUrl : photoUrl} variant={isMyMessage(msg.senderId) ? 'send' : 'receive'} content={msg.content}/>
 					)
 				})}
         </div>

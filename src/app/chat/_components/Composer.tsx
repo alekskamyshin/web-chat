@@ -1,10 +1,20 @@
+import { useMe } from "@/features/auth/model/hooks/useMe";
+import { useSendMessage } from "@/features/socket/hooks/useSendMessage";
 import Button from "@/shared/ui/components/Button/Button";
-import { useEffect, useRef, useState } from "react";
+import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
-export default function Composer() {
+type ComposerProps = {
+	chatId: string;
+}
+
+const EnterKey = 'Enter' as const
+
+export default function Composer({ chatId }: ComposerProps ) {
 	const [msg, setMsg] = useState<string>()
 	const MAX_HEIGHT = 250
 	const textAreaWrapperRef = useRef<HTMLTextAreaElement>(null)
+	const { data: userData } = useMe()
+  const sendMessage = useSendMessage();
 
 	const resize = () => {
 		const textarea = textAreaWrapperRef.current
@@ -26,6 +36,30 @@ export default function Composer() {
 		resize()
 	}
 
+	const onKeyDownHandler = (e: KeyboardEvent ) => {
+		if (e.key === EnterKey && !e.shiftKey ) {
+			handleSend()
+		}
+	}
+
+	const handleSend = async () => {
+		const content = msg?.trim()
+
+    const senderId = userData?.user?.id;
+
+    if (!content || !senderId || sendMessage.isPending) {
+      return;
+    }
+
+    try {
+      await sendMessage.mutateAsync({ chatId, content, senderId });
+    } catch(err) {
+			console.log('error sending', err)
+		} finally {
+			setMsg('')
+		}
+	}
+
 	useEffect( () => {
 		resize()
 	}, [])
@@ -38,14 +72,16 @@ export default function Composer() {
 					<textarea 
 						className={`w-full active:border-none focus:border-none focus-visible:border-none focus-visible:outline-none resize-none h-full max-h-[${MAX_HEIGHT}px]`}
 						ref={textAreaWrapperRef}
+						onKeyDown={e => onKeyDownHandler(e)}
 						value={msg} 
 						aria-multiline
-						onInput={e => onChangeHandler(e)} 
+						onChange={e => onChangeHandler(e)} 
 					/>
           </div>
           <Button
             type="button"
 						variant='primary'
+						onClick={handleSend}
 						size='icon'
             aria-label="Send message"
           >
