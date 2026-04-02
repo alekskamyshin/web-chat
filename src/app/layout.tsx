@@ -28,7 +28,7 @@ export default function RootLayout({
         lang="en"
         className={`${display.variable} ${sans.variable} h-full antialiased`}
       >
-      <body className="h-screen overflow-hidden flex flex-col">
+      <body className="h-screen flex flex-col">
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>

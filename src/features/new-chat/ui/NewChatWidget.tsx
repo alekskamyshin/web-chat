@@ -31,6 +31,8 @@ export default function NewChatWidget({ isOpen, toggle }: NewChatWidgetProps) {
 			await createChat.mutateAsync({ otherUserId: userId });
 		} catch (error) {
 			setCreateError(error instanceof Error ? error.message : 'Unable to create chat.');
+		} finally {
+			handleClose()
 		}
 	};
 
@@ -43,8 +45,13 @@ export default function NewChatWidget({ isOpen, toggle }: NewChatWidgetProps) {
 		return null
 	}
 
+	const handleClose = () => {
+		setQuery('')
+		toggle()
+	}
+
 	return (
-		<Modal isOpen closeModal={toggle}>
+		<Modal isOpen closeModal={handleClose}>
 			<div>
 				<div className="flex items-start justify-between gap-4">
 					<div>
@@ -57,9 +64,9 @@ export default function NewChatWidget({ isOpen, toggle }: NewChatWidgetProps) {
 					</div>
 					<button
 						type="button"
-						onClick={toggle}
+						onClick={handleClose}
 						aria-label="Close"
-						className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-elevated text-text-secondary transition hover:text-text-primary"
+						className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-border bg-elevated text-text-secondary transition hover:text-text-primary"
 					>
 						<svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
 							<path
