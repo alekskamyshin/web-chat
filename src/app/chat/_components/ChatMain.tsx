@@ -1,6 +1,7 @@
 import type { ChatListItemDto } from '@/api/generated/schemas';
 import Button from '@/shared/ui/components/Button/Button';
 import Chat from './Chat';
+import Composer from './Composer';
 
 type ChatMainProps = {
   selectedChat?: ChatListItemDto | null;
@@ -54,27 +55,8 @@ export default function ChatMain({ selectedChat }: ChatMainProps) {
       </div>
 
 			<Chat photoUrl={selectedChat.photoUrl} chatId={selectedChat.id} />
+			<Composer />
 
-      <div className="min-h-20 border-t overflow-hidden border-border bg-surface px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex-1 rounded-2xl border border-border bg-elevated px-4 py-3 text-sm text-text-secondary">
-            Message input (coming soon)
-          </div>
-          <Button
-            type="button"
-						variant='primary'
-						size='icon'
-            aria-label="Send message"
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" className="h-4 w-4">
-              <path
-                d="M4 12l16-7-4 7 4 7-16-7z"
-                fill="currentColor"
-              />
-            </svg>
-          </Button>
-        </div>
-      </div>
     </section>
   );
 }

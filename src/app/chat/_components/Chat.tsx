@@ -43,7 +43,7 @@ export default function Chat({chatId, photoUrl}: ChatProps) {
         <div className="flex flex-col gap-4">
 				{ messageData.map( msg => {
 					return (
-						<MessageBubble avatar={isSenderMessage(msg.senderId) ? photoUrl : undefined} variant={isSenderMessage(msg.senderId) ? 'send' : 'receive'} content={msg.content}/>
+						<MessageBubble key={msg.id} avatar={isSenderMessage(msg.senderId) ? photoUrl : undefined} variant={isSenderMessage(msg.senderId) ? 'send' : 'receive'} content={msg.content}/>
 					)
 				})}
         </div>
