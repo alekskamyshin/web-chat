@@ -7,6 +7,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AuthNotAuthenticatedError } from '@/features/auth/model/errors/auth.errors';
 import { useMe } from '@/features/auth/model/hooks/useMe';
 import { signOut } from '@/features/auth/services/auth.service';
+import { disconnectSocket } from '@/features/socket/socket.service';
+import { useChatSocket } from '@/features/socket/hooks/useChatSocket';
 import { useChats } from '@/entities/chat/model/hooks/useChats';
 import ChatSidebar from '@/app/chat/_components/ChatSidebar';
 import ChatMain from '@/app/chat/_components/ChatMain';
@@ -36,11 +38,17 @@ export default function ChatPage() {
     }
   }, [chats, selectedChatId]);
 
+  useChatSocket({
+    enabled: Boolean(me) && !meError,
+    selectedChatId,
+  });
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
 
     try {
       await signOut();
+      disconnectSocket();
       queryClient.clear();
       router.replace('/');
     } finally {
@@ -67,12 +75,11 @@ export default function ChatPage() {
   }
 
   return (
-    <main className="flex min-h-[calc(100vh-0px)] flex-1 bg-[color:var(--background)]">
-      <div className="flex w-full flex-1 flex-col lg:flex-row">
+    <main className="flex h-full flex-1 bg-[color:var(--background)]">
+      <div className="flex h-full w-full flex-1 flex-col lg:flex-row">
         <div className="w-full max-w-none lg:max-w-sm">
           <ChatSidebar
             chats={chats}
-            selectedChatId={selectedChatId}
             onSelectChat={setSelectedChatId}
             onCreateChat={() => console.log('create chat')}
             onLogout={handleLogout}
