@@ -95,6 +95,7 @@ export default function ChatPage() {
         <div className="hidden w-full max-w-none lg:block lg:max-w-sm">
           <ChatSidebar
             chats={chats}
+            selectedChatId={selectedChatId}
             onSelectChat={handleSelectChat}
             onCreateChat={() => setIsCreateChatModalOpen(true)}
             onLogout={handleLogout}
@@ -174,6 +175,7 @@ export default function ChatPage() {
         >
           <ChatSidebar
             chats={chats}
+            selectedChatId={selectedChatId}
             onSelectChat={handleSelectChat}
             onCreateChat={() => setIsCreateChatModalOpen(true)}
             onLogout={handleLogout}

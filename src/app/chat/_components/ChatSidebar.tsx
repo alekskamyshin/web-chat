@@ -5,6 +5,7 @@ import ChatSidebarItem from './ChatSidebarItem';
 
 type ChatSidebarProps = {
   chats: ChatListItemDto[];
+  selectedChatId?: string | null;
   onSelectChat: (chatId: string) => void;
   onCreateChat: () => void;
   onLogout: () => void;
@@ -14,6 +15,7 @@ type ChatSidebarProps = {
 
 export default function ChatSidebar({
   chats,
+  selectedChatId,
   onSelectChat,
   onCreateChat,
   onLogout,
@@ -83,7 +85,14 @@ export default function ChatSidebar({
           </div>
         ) : (
           <ul className="space-y-2 px-2">
-            {chats.map((chat) => <ChatSidebarItem key={chat.id} chat={chat} onSelectChat={onSelectChat} />)}
+            {chats.map((chat) => (
+              <ChatSidebarItem
+                key={chat.id}
+                chat={chat}
+                selectedChatId={selectedChatId}
+                onSelectChat={onSelectChat}
+              />
+            ))}
           </ul>
         )}
       </div>

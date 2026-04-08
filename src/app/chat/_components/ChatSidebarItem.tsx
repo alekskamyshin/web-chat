@@ -6,11 +6,13 @@ import { formatTime } from "@/shared/utils";
 type Props = {
   chat: ChatListItemDto;
   onSelectChat: (chatId: string) => void;
+  selectedChatId?: string | null;
 }
 
 export default function ChatSidebarItem({
 	chat,
-	onSelectChat
+	onSelectChat,
+	selectedChatId
 }: Props) {
 
 	const lastMessage = chat.lastMessage?.content ?? 'No messages yet.';
@@ -38,7 +40,7 @@ export default function ChatSidebarItem({
 						{lastMessage}
 					</p>
 				</div>
-				{chat.unreadCount > 0 ? (
+				{chat.unreadCount > 0 && chat.id !== selectedChatId ? (
 					<span className="flex h-6 min-w-[24px] items-center justify-center rounded-full bg-accent px-2 text-xs font-semibold text-white">
 						{chat.unreadCount}
 					</span>
