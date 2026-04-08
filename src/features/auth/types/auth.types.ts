@@ -20,8 +20,3 @@ export type GoogleAuthResult = {
 
 export type GoogleSignInPayload = GoogleSignInDto;
 
-type AuthService<T> = { auth: () => Promise<T>; signOut?: () => Promise<void> };
-
-export type AuthServicesMap = {
-  [provider in AuthProvider]?: AuthService<GoogleAuthResult>;
-};

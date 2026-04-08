@@ -6,6 +6,8 @@ type RenderGoogleButtonOptions = {
   onError?: (error: Error) => void;
 };
 
+let googleInitialized = false;
+
 export const renderGoogleSignInButton = async ({
   container,
   onCredential,
@@ -19,30 +21,43 @@ export const renderGoogleSignInButton = async ({
 
   await loadGoogleGis();
 
-  window.google?.accounts?.id?.initialize({
-    client_id: clientId,
-    ux_mode: 'popup',
-    callback: (response) => {
-      const idToken = response?.credential;
+  if (!window.google?.accounts?.id) {
+    throw new Error('Google GIS is not available.');
+  }
 
-      if (!idToken) {
-        onError?.(new Error('No id token returned from Google.'));
-        return;
-      }
+  if (!googleInitialized) {
+    window.google.accounts.id.initialize({
+      client_id: clientId,
+      ux_mode: 'popup',
+      callback: (response) => {
+        const idToken = response?.credential;
 
-      onCredential(idToken);
-    },
-  });
+        if (!idToken) {
+          onError?.(new Error('No id token returned from Google.'));
+          return;
+        }
 
-  const width = container.clientWidth || 320;
+        onCredential(idToken);
+      },
+    });
+
+    googleInitialized = true;
+  }
 
   container.innerHTML = '';
+  container.style.width = '100%';
 
-  window.google?.accounts?.id?.renderButton(container, {
-    theme: 'outline',
-    size: 'large',
-    text: 'continue_with',
-    shape: 'pill',
-    width,
-  });
+  const render = () => {
+    const width = Math.max(container.getBoundingClientRect().width, 240);
+
+    window.google?.accounts?.id?.renderButton(container, {
+      theme: 'outline',
+      size: 'large',
+      text: 'continue_with',
+      shape: 'pill',
+      width,
+    });
+  };
+
+  window.requestAnimationFrame(render);
 };

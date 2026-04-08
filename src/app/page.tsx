@@ -3,7 +3,7 @@ import LandingLeft from '@/app/(marketing)/_components/LandingLeft';
 
 export default function Home() {
   return (
-    <main className="relative flex flex-1 flex-col min-h-[100dvh] bg-[color:var(--background)]">
+    <main className="relative flex flex-1 flex-col overflow-auto lg:overflow-hidden min-h-[100dvh] bg-[color:var(--background)]">
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_20%,color-mix(in_srgb,var(--primary)_30%,transparent),transparent_50%)]" />
         <div

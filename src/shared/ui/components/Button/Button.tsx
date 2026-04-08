@@ -8,7 +8,7 @@ const sizes = {
 } as const;
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'icon';
 	fullWidth?: boolean;
   size?: keyof typeof sizes
   tooltip?: string;
@@ -33,6 +33,8 @@ export default function Button({
 		"border-accent bg-accent text-white hover:border-primary hover:bg-primary",
 		secondary:
 		"border-border bg-elevated text-text-secondary hover:border-accent hover:text-accent",
+		icon:
+		"border-border bg-elevated text-text-primary hover:border-accent hover:text-accent",
 	} as const;
 
 	return (
