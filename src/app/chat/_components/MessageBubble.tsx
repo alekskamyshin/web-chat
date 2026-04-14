@@ -33,7 +33,15 @@ export default function MessageBubble({
 			className={cn(baseClasses, variants[variant])}
 		>
 			<div className="h-9 w-9 rounded-full overflow-hidden bg-[color:var(--elevated)]">
-				{ avatar && <img className="h-full w-full object-cover" src={avatar} /> }
+				{ avatar && (
+					<img
+						className="h-full w-full object-cover"
+						src={avatar}
+						alt="Avatar"
+						loading="lazy"
+						decoding="async"
+					/>
+				) }
 			</div>
 			<div className="rounded-2xl bg-[color:var(--elevated)] px-4 py-3 text-sm text-[color:var(--text-primary)] whitespace-pre-wrap">
 				{ content }

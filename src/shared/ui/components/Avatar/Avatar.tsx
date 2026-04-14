@@ -22,7 +22,13 @@ export function Avatar({
 						className={cn(baseClasses, className)}
 					>
 					{ src ? 
-						<img className="rounded-2xl" src={src} alt={alt} /> :
+						<img
+							className="rounded-2xl object-cover"
+							src={src}
+							alt={alt ?? name ?? 'Avatar'}
+							loading="lazy"
+							decoding="async"
+						/> :
 						<span className="rounded-2xl">{name?.split(' ').map(s => s[0].toUpperCase()).join('. ')}</span> 
 					}
 				</div>

@@ -1,5 +1,6 @@
 import { useMe } from "@/features/auth/model/hooks/useMe";
 import { useSendMessage } from "@/features/socket/hooks/useSendMessage";
+import { useNotification } from "@/shared/lib/hooks/useNotification";
 import Button from "@/shared/ui/components/Button/Button";
 import { KeyboardEvent, useEffect, useRef, useState } from "react";
 
@@ -15,6 +16,7 @@ export default function Composer({ chatId }: ComposerProps ) {
 	const textAreaWrapperRef = useRef<HTMLTextAreaElement>(null)
 	const { data: userData } = useMe()
   const sendMessage = useSendMessage();
+	const notify = useNotification();
 
 	const resize = () => {
 		const textarea = textAreaWrapperRef.current
@@ -53,8 +55,9 @@ export default function Composer({ chatId }: ComposerProps ) {
 
     try {
       await sendMessage.mutateAsync({ chatId, content, senderId });
-    } catch(err) {
-			console.log('error sending', err)
+		} catch(err) {
+			const description = err instanceof Error ? err.message : 'Please try again.'
+			notify.error('Message failed to send', { description })
 		} finally {
 			setMsg('')
 		}

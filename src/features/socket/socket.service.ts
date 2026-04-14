@@ -2,15 +2,18 @@ import { io, Socket } from 'socket.io-client';
 
 import type { MessageDto } from '@/api/generated/schemas';
 
+type SocketMessageDto = MessageDto & { clientId?: string };
+type MessageWithClientIdDto = MessageDto & { clientId: string };
+
 type ServerToClientEvents = {
-  'chat:message': (message: MessageDto) => void;
+  'chat:message': (message: SocketMessageDto) => void;
   'chat:error': (payload: { message?: string }) => void;
 };
 
 type ClientToServerEvents = {
   'chat:send': (
-    payload: { chatId: string; content: string },
-    ack: (response: { ok: boolean; data?: MessageDto; error?: string }) => void,
+    payload: { chatId: string; content: string; clientId: string },
+    ack: (response: { ok: boolean; data?: MessageWithClientIdDto; error?: string }) => void,
   ) => void;
 };
 

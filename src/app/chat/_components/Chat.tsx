@@ -1,94 +1,49 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import { useMessages } from "@/entities/messages/model/hooks/useMessages";
 import { useMe } from "@/features/auth/model/hooks/useMe";
+import { useNotification } from "@/shared/lib/hooks/useNotification";
 import MessageBubble from "./MessageBubble";
+import { useChatAutoScroll } from "./useChatAutoScroll";
 
 type ChatProps = {
 	chatId: string;
 	photoUrl?:string | null;
+	scrollThreshold?: number;
 }
 
-export default function Chat({chatId, photoUrl}: ChatProps) {
-  const { data: messageData, isLoading: isMessagesLoading } = useMessages(chatId);
+export default function Chat({chatId, photoUrl, scrollThreshold = 50}: ChatProps) {
+  const { data: messageData, isLoading: isMessagesLoading, error: messagesError } = useMessages(chatId);
   const { data: me, isLoading: isMeLoading  } = useMe();
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
-  const handledInitialScrollRef = useRef<string | null>(null);
-  const lastMessageCountRef = useRef(0);
-  const lastChatIdRef = useRef<string | null>(null);
+  const lastMessagesErrorRef = useRef<string | null>(null);
+  const notify = useNotification();
 
-  useLayoutEffect(() => {
-    if (isMessagesLoading) {
+  const { handleScroll } = useChatAutoScroll({
+    chatId,
+    messageCount: messageData?.length ?? 0,
+    isMessagesLoading,
+    containerRef: scrollContainerRef,
+    threshold: scrollThreshold,
+  });
+
+  useEffect(() => {
+    if (!messagesError) {
+      lastMessagesErrorRef.current = null;
       return;
     }
 
-    if (!messageData) {
-      return;
+    const message =
+      messagesError instanceof Error
+        ? messagesError.message
+        : 'Unable to load messages.';
+
+    if (lastMessagesErrorRef.current !== message) {
+      lastMessagesErrorRef.current = message;
+      notify.error('Messages failed to load', { description: message });
     }
+  }, [messagesError, notify]);
 
-    if (!scrollContainerRef.current) {
-      return;
-    }
-
-    if (handledInitialScrollRef.current === chatId) {
-      return;
-    }
-
-    handledInitialScrollRef.current = chatId;
-    lastChatIdRef.current = chatId;
-    lastMessageCountRef.current = messageData.length;
-
-    if (messageData.length === 0) {
-      return;
-    }
-
-    requestAnimationFrame(() => {
-      scrollContainerRef.current?.scrollTo({
-        top: scrollContainerRef.current.scrollHeight,
-        behavior: 'auto',
-      });
-    });
-  }, [chatId, isMessagesLoading, messageData]);
-
-  useLayoutEffect(() => {
-    if (isMessagesLoading) {
-      return;
-    }
-
-    if (!messageData) {
-      return;
-    }
-
-    if (!scrollContainerRef.current) {
-      return;
-    }
-
-    if (lastChatIdRef.current !== chatId) {
-      lastChatIdRef.current = chatId;
-      lastMessageCountRef.current = messageData.length;
-      return;
-    }
-
-    const previousCount = lastMessageCountRef.current;
-    const nextCount = messageData.length;
-    lastMessageCountRef.current = nextCount;
-
-    if (nextCount <= previousCount) {
-      return;
-    }
-
-    const scrollContainer = scrollContainerRef.current;
-    const distanceToBottom =
-      scrollContainer.scrollHeight -
-      scrollContainer.scrollTop -
-      scrollContainer.clientHeight;
-
-    const behavior = distanceToBottom > 50 ? 'smooth' : 'auto';
-    scrollContainer.scrollTo({
-      top: scrollContainer.scrollHeight,
-      behavior,
-    });
-  }, [chatId, isMessagesLoading, messageData]);
 
 	if ( isMessagesLoading || isMeLoading ) {
 		return (
@@ -101,15 +56,23 @@ export default function Chat({chatId, photoUrl}: ChatProps) {
 
 	if (!me) {
 		return (
-			<span className="flex h-8 w-8 items-center justify-center">
+			<span className="flex flex-1 flex-col w-full py-6 px-6 items-center justify-center">
 				Loading data...
+			</span>
+		)
+	}
+
+	if (messagesError) {
+		return (
+			<span className="flex flex-1 flex-col w-full py-6 px-6 items-center justify-center">
+				Unable to load messages.
 			</span>
 		)
 	}
 
 	if (!messageData) {
 		return (
-			<span className="flex h-8 w-8 items-center justify-center">
+			<span className="flex flex-1 flex-col w-full py-6 px-6 items-center justify-center">
 				No messages yet... start typing!
 			</span>
 		)
@@ -118,7 +81,7 @@ export default function Chat({chatId, photoUrl}: ChatProps) {
 	const isMyMessage = (id: string) => me.user.id === id
 
 	return (
-      <div ref={scrollContainerRef} className="flex flex-1 flex-col w-full py-6 px-6 overflow-auto">
+      <div ref={scrollContainerRef} onScroll={handleScroll} className="flex flex-1 flex-col w-full py-6 px-6 overflow-auto">
         <div className="flex flex-col gap-4">
 				{ messageData.map( msg => {
 					return (
