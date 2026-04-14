@@ -1,5 +1,36 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Realtime Chat
+
+This app provides a realtime chat experience. Users sign in with Google OAuth, then the frontend uses a JWT token to authenticate to the backend.
+
+## Setup
+
+Create a local env file from the example and fill in values:
+
+```bash
+cp .env.example .env
+```
+
+Required vars (see `.env.example`):
+
+- `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID`
+- `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_SECRET`
+- `NEXT_PUBLIC_API_BASE_URL`
+
+## Architecture
+
+- Frontend: Next.js app handles the realtime chat UI and Google OAuth sign-in.
+- Auth: Google OAuth returns an ID token; the app uses a JWT to authenticate requests to the backend.
+- Backend: API is configured by `NEXT_PUBLIC_API_BASE_URL` and validates JWTs.
+
+## How To Run
+
+```bash
+npm install
+npm run dev
+```
+
 ## Getting Started
 
 First, run the development server:
