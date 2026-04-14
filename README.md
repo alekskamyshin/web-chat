@@ -4,6 +4,16 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 This app provides a realtime chat experience. Users sign in with Google OAuth, then the frontend uses a JWT token to authenticate to the backend.
 
+## Screenshots
+
+### Main Screen
+
+![Chat main screen](./public/chat-2.png)
+
+### Chat UI
+
+![Chat UI](./public/chat-1.png)
+
 ## Setup
 
 Create a local env file from the example and fill in values:
